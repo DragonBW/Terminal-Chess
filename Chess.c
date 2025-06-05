@@ -1,11 +1,12 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdbool.h>
 
 int main()
 {
 
-    char matrix[9][17] = { {"  a b c d e f g h"}, {"1 M O M O M O M O"}, {"2 O M O M O M O M"}, {"3 M O M O M O M O"}, {"4 O M O M O M O M"}, {"5 M O M O M O M O"}, {"6 O M O M O M O M"}, {"7 M O M O M O M O"}, {"8 O M O M O M O M"} };
+    char matrix[9][17] = { {"  a b c d e f g h"}, {"1   0   0   0   0"}, {"2 0   0   0   0  "}, {"3   0   0   0   0"}, {"4 0   0   0   0  "}, {"5   0   0   0   0"}, {"6 0   0   0   0  "}, {"7   0   0   0   0"}, {"8 0   0   0   0  "}
+};
     int pawl();
     {
         
@@ -16,7 +17,7 @@ int main()
         
         char collum;
         int roll;
-        
+        char storedChar = '2';
         int slctdPiece = 0;
         int i;
         int j;
@@ -43,8 +44,14 @@ int main()
         
         if (slctdPiece == 1)
         {
-            int collumPos;
-            int rollPos;
+            int lastCollumPos = 0;
+            int lastRollPos = 0;
+            int collumPos = 0;
+            int rollPos = 0;
+            if (storedChar == '0')
+                matrix[lastRollPos - 1][lastCollumPos - 1] = '0';
+            else
+                matrix[lastRollPos - 1][lastCollumPos - 1] = ' ';
             switch (collum)
             {
             case 'a':
@@ -105,6 +112,13 @@ int main()
             default:
                 break;
             }
+
+            if (matrix[rollPos - 1][collumPos - 1] == '0')
+                storedChar = '0';
+            else
+                storedChar = ' ';
+            lastCollumPos = collumPos;
+            lastRollPos = rollPos;
             printf("%d %d", rollPos, collumPos);
             matrix[rollPos-1][collumPos-1] = 80;
         }
