@@ -70,9 +70,21 @@ int ConvertCoord(char collum, int roll)
 }
 int main()
 {
+    
+    char matrix[9][21] = 
+    {
+        {"  a b c d e f g h"},
+        {"1 P 0   0   0   0"},
+        {"2 0   0   0   0  "},
+        {"3   0   0   0   0"},
+        {"4 0   0   0   0  "},
+        {"5   0   0   0   0"},
+        {"6 0   0   0   0  "},
+        {"7   0   0   0   0"},
+        {"8 0   0   0   0  "},
+    };
 
-    char matrix[9][17] = { {"  a b c d e f g h"}, {"1 P 0   0   0   0"}, {"2 0   0   0   0  "}, {"3   0   0   0   0"}, {"4 0   0   0   0  "}, {"5   0   0   0   0"}, {"6 0   0   0   0  "}, {"7   0   0   0   0"}, {"8 0   0   0   0  "}
-};  int lastCollumPos = 3;
+    int lastCollumPos = 3;
     int lastRollPos = 2;
     char storedChar = '2';
     
@@ -91,6 +103,9 @@ int main()
             printf("\n");
             for (j = 0; j < 17; j++)
             {
+                if (matrix[i][j] == '0')
+                    printf("%c", 254);
+                else
                 printf("%c", matrix[i][j]);
             }
 
@@ -102,35 +117,43 @@ int main()
         printf("4 - torre\n");
         printf("5 - rainha\n");
         printf("6 - rei\n");
-        printf("escolha a peca:");
-        scanf(" %d", &slctdPiece);
-        printf("de as coordenadas da jogada:");
-        scanf(" %c %d", &collum, &roll);
-        
-        if (slctdPiece == 1)
+        bool validMove = false;
+        do
         {
             
-            
-            if (storedChar == '0')
-                matrix[lastRollPos - 1][lastCollumPos - 1] = '0';
-            else
-                matrix[lastRollPos - 1][lastCollumPos - 1] = ' ';
-            ConvertCoord(collum, roll);
-            
+            printf("escolha a peca:");
+            scanf(" %d", &slctdPiece);
+            printf("de as coordenadas da jogada:");
+            scanf(" %c %d", &collum, &roll);
 
-            if (matrix[rollPos - 1][collumPos - 1] == '0')
-                storedChar = '0';
-            else
-                storedChar = ' ';
-            if (rollPos - 1 == lastRollPos)
-                matrix[rollPos - 1][collumPos - 1] = 'P';
-            else
-                printf("coordenadas invalidas!");
-            lastCollumPos = collumPos;
-            lastRollPos = rollPos;
-            
-        }
-           
+            if (slctdPiece == 1)
+            {
+
+
+                if (storedChar == '0')
+                    matrix[lastRollPos - 1][lastCollumPos - 1] = '0';
+                else
+                    matrix[lastRollPos - 1][lastCollumPos - 1] = ' ';
+                ConvertCoord(collum, roll);
+
+
+                if (matrix[rollPos - 1][collumPos - 1] == '0')
+                    storedChar = '0';
+                else
+                    storedChar = ' ';
+                if (rollPos - 1 == lastRollPos && collumPos == lastCollumPos)
+                {
+                    matrix[rollPos - 1][collumPos - 1] = 'P';
+                    lastCollumPos = collumPos;
+                    lastRollPos = rollPos;
+                    validMove = true;
+                }
+                else
+                    printf("coordenadas invalidas!\n");
+                
+
+            }
+        } while (validMove == false);
     }
 
     
