@@ -1,38 +1,49 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h> 
+#include <ctype.h> 
 
-int collumPos = 3;
-int rollPos = 2;
+int collumPos = 0;
+int rollPos = 0;
+char storedChar = '2';
+bool validMove = false;
+char matrix[9][17];
+char collum;
+int roll;
+int convertedCollum;
+int convertedRoll;
+int lastCollumPos = 0;
+int lastRollPos = 0;
 
-int ConvertCoord(char collum, int roll)
+void ConvertCoord(char collum, int roll)
 {
     
     switch (collum)
     {
     case 'a':
-        collumPos = 3;
+        convertedCollum = 2;
         break;
     case 'b':
-        collumPos = 5;
+        convertedCollum = 4;
         break;
     case 'c':
-        collumPos = 7;
+        convertedCollum = 6;
         break;
     case 'd':
-        collumPos = 9;
+        convertedCollum = 8;
         break;
     case 'e':
-        collumPos = 11;
+        convertedCollum = 10;
         break;
     case 'f':
-        collumPos = 13;
+        convertedCollum = 12;
         break;
     case 'g':
-        collumPos = 15;
+        convertedCollum = 14;
         break;
     case 'h':
-        collumPos = 17;
+        convertedCollum = 16;
         break;
     default:
         break;
@@ -40,62 +51,280 @@ int ConvertCoord(char collum, int roll)
     switch (roll)
     {
     case 1:
-        rollPos = 2;
+        convertedRoll = 1;
         break;
     case 2:
-        rollPos = 3;
+        convertedRoll = 2;
         break;
     case 3:
-        rollPos = 4;
+        convertedRoll = 3;
         break;
     case 4:
-        rollPos = 5;
+        convertedRoll = 4;
         break;
     case 5:
-        rollPos = 6;
+        convertedRoll = 5;
         break;
     case 6:
-        rollPos = 7;
+        convertedRoll = 6;
         break;
     case 7:
-        rollPos = 8;
+        convertedRoll = 7;
         break;
     case 8:
-        rollPos = 9;
+        convertedRoll = 8;
         break;
     default:
         break;
     }
-    return rollPos, collumPos;
+    
 }
+bool MovCheck(bool positiveX, bool positiveY)
+{
+    
+    if(positiveX && positiveY)
+    {
+        int i=lastRollPos, j =lastCollumPos;
+        printf("%d %d", lastRollPos, lastCollumPos);
+        while(i < rollPos-1)
+        {
+            
+            i++;
+            if (matrix[i][j] != '0' && matrix[i][j] != ' ')
+            {
+                printf("%d %d", i, j);
+                printf("peca no caminho1!\n");
+                return false;
+            }
+        }
+        while (j < collumPos -2)
+        {
+            j+=2;
+            if (matrix[i][j] != '0' && matrix[i][j] != ' ')
+            {
+                printf("%c", matrix[i][j]);
+                printf("peca no caminho2!\n");
+                return false;
+            }
+        }
+    }
+    if(!positiveX && !positiveY)
+    {
+        int i = lastRollPos, j = lastCollumPos;
+        printf("%d %d", lastRollPos, lastCollumPos);
+        while (i > rollPos +1)
+        {
+            i--;
+            if (matrix[i][j] != '0' && matrix[i][j] != ' ')
+            {
+                
+                printf("peca no caminho1!\n");
+                return false;
+            }
+        }
+        while (j > collumPos +2)
+        {
+            j -= 2;
+            if (matrix[i][j] != '0' && matrix[i][j] != ' ')
+            {
+                
+                printf("peca no caminho2!\n");
+                return false;
+            }
+        }
+    }
+    if(!positiveX && positiveY)
+    {
+        for (int i = lastRollPos; i < rollPos; i++)
+        {
+            for (int j = lastCollumPos; j > collumPos; j -= 2)
+            {
+                if (matrix[i][j] != '0' && matrix[i][j] != ' ')
+                {
+                    printf("peca no caminho!");
+                    return false;
+                }
+            }
+        }
+    }
+    if(positiveX && !positiveY)
+    {
+        for (int i = lastRollPos; i > rollPos; i--)
+        {
+            for (int j = lastCollumPos; j < collumPos; j += 2)
+            {
+                if (matrix[i][j] != '0' && matrix[i][j] != ' ')
+                {
+                    printf("peca no caminho!");
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+void Pawl(bool upper)
+{
+    
+    
+
+    
+    ConvertCoord(collum, roll);
+    collumPos = convertedCollum;
+    rollPos = convertedRoll;
+
+    
+    
+    if (upper)
+    {
+
+
+        if (rollPos - 1 == lastRollPos && collumPos == lastCollumPos)
+        {
+
+            matrix[rollPos][collumPos] = 'P';
+            
+            validMove = true;
+        }
+        else
+        {
+            printf("coordenadas invalidas!\n");
+
+        }
+    }
+    else
+    {
+        if (rollPos + 1 == lastRollPos && collumPos == lastCollumPos)
+        {
+
+            matrix[rollPos][collumPos] = 'p';
+            
+            validMove = true;
+        }
+        else
+        {
+            printf("coordenadas invalidas!\n");
+
+        }
+    }
+
+    
+    
+}
+void Rook(bool upper)
+
+{
+    ConvertCoord(collum, roll);
+    collumPos = convertedCollum;
+    rollPos = convertedRoll;
+
+
+    
+    if (upper)
+    {
+        if (rollPos == lastRollPos || collumPos == lastCollumPos)
+        {
+
+            if ((rollPos > lastRollPos || collumPos > lastCollumPos) && MovCheck(true, true))
+            {
+                if (matrix[rollPos][collumPos] != '0' && matrix[rollPos][collumPos] != ' ' && isupper(matrix[rollPos][collumPos]))
+                {
+                    printf("peca aliada seleciionada!");
+                }
+                else
+                {
+                    matrix[rollPos][collumPos] = 'T';
+                    validMove = true;
+                }
+            }
+            else if ((rollPos < lastRollPos || collumPos < lastCollumPos) && MovCheck(false, false))
+            {
+                if (matrix[rollPos][collumPos] != '0' && matrix[rollPos][collumPos] != ' ' && isupper(matrix[rollPos][collumPos]))
+                {
+                    printf("peca aliada selecionada!");
+                }
+                else
+                {
+                    matrix[rollPos][collumPos] = 'T';
+                    validMove = true;
+                }
+            }
+
+        }
+        else
+        {
+            printf("coordenadas invalidas!\n");
+        }
+    }
+    else
+    {
+        if (rollPos == lastRollPos || collumPos == lastCollumPos)
+        {
+
+            if ((rollPos > lastRollPos || collumPos > lastCollumPos) && MovCheck(true, true))
+            {
+                if (matrix[rollPos][collumPos] != '0' && matrix[rollPos][collumPos] != ' ' && islower(matrix[rollPos][collumPos]))
+                {
+                    printf("peca aliada seleciionada!");
+                }
+                else
+                {
+                    matrix[rollPos][collumPos] = 't';
+                    validMove = true;
+                }
+            }
+            else if ((rollPos < lastRollPos || collumPos < lastCollumPos) && MovCheck(false, false))
+            {
+                if (matrix[rollPos][collumPos] != '0' && matrix[rollPos][collumPos] != ' ' && islower(matrix[rollPos][collumPos]))
+                {
+                    printf("peca aliada selecionada!");
+                }
+                else
+                {
+                    matrix[rollPos][collumPos] = 't';
+                    validMove = true;
+                }
+            }
+            
+        }
+        else
+        {
+            printf("coordenadas invalidas!\n");
+        }
+    }
+    
+}
+
 int main()
 {
     
-    char matrix[9][21] = 
+    char start[9][17] = 
     {
         {"  a b c d e f g h"},
-        {"1 P 0   0   0   0"},
-        {"2 0   0   0   0  "},
+        {"1 T 0   0   0   T"},
+        {"2 P P P P P P P P"},
         {"3   0   0   0   0"},
         {"4 0   0   0   0  "},
         {"5   0   0   0   0"},
         {"6 0   0   0   0  "},
-        {"7   0   0   0   0"},
-        {"8 0   0   0   0  "},
+        {"7 p p p p p p p p"},
+        {"8 t   0   0   0 t"},
     };
-
-    int lastCollumPos = 3;
-    int lastRollPos = 2;
-    char storedChar = '2';
     
+    memcpy(matrix, start,sizeof(start));
+
+    
+    
+    int round = 1;
     bool quit = false;
     while (quit == false)
     {
         
-        char collum;
-        int roll;
         
-        int slctdPiece = 0;
+        char slctdCollum;
+        int slctdRoll;
+        
+        
         int i;
         int j;
         for (i = 0; i < 9; i++)
@@ -111,52 +340,62 @@ int main()
 
         }
         printf("\n\n");
-        printf("1 - peao\n");
-        printf("2 - bispo\n");
-        printf("3 - cavalo\n");
-        printf("4 - torre\n");
-        printf("5 - rainha\n");
-        printf("6 - rei\n");
-        bool validMove = false;
+        printf("Rodada:%d\n", round);
+        if (round % 2 == 0)
+            printf("As Maiusculas jogam!\n\n");
+        else
+            printf("As Minusculas jogam!\n\n");
+        
         do
         {
-            
-            printf("escolha a peca:");
-            scanf(" %d", &slctdPiece);
-            printf("de as coordenadas da jogada:");
-            scanf(" %c %d", &collum, &roll);
-
-            if (slctdPiece == 1)
+            validMove = false;
+            printf("informe a coordenada da peca: ");
+            scanf(" %c %d", &slctdCollum, &slctdRoll);
+            ConvertCoord(slctdCollum, slctdRoll);
+            lastCollumPos = convertedCollum;
+            lastRollPos = convertedRoll;
+            if ((isupper(matrix[lastRollPos][lastCollumPos]) && round %2 == 0) || (islower(matrix[lastRollPos][lastCollumPos]) && round % 2 != 0))
             {
-
-
-                if (storedChar == '0')
-                    matrix[lastRollPos - 1][lastCollumPos - 1] = '0';
-                else
-                    matrix[lastRollPos - 1][lastCollumPos - 1] = ' ';
-                ConvertCoord(collum, roll);
-
-
-                if (matrix[rollPos - 1][collumPos - 1] == '0')
-                    storedChar = '0';
-                else
-                    storedChar = ' ';
-                if (rollPos - 1 == lastRollPos && collumPos == lastCollumPos)
-                {
-                    matrix[rollPos - 1][collumPos - 1] = 'P';
-                    lastCollumPos = collumPos;
-                    lastRollPos = rollPos;
-                    validMove = true;
-                }
-                else
-                    printf("coordenadas invalidas!\n");
-                
-
+                printf("de as coordenadas da jogada: ");
+                scanf(" %c %d", &collum, &roll);
             }
+            else if (matrix[lastRollPos][lastCollumPos] == '0' || matrix[lastRollPos][lastCollumPos] == ' ')
+            {
+                printf("posicao selecionada vazia!\n");
+                continue;
+            }
+            else
+            {
+                printf("Lado incorreto!\n");
+                printf("%d", round);
+                continue;
+            }
+
+            
+            
+            
+
+            if (matrix[lastRollPos][lastCollumPos] == 'P' || matrix[lastRollPos][lastCollumPos] == 'p')
+                Pawl(matrix[lastRollPos][lastCollumPos] == 'P' && round % 2 == 0);
+            if (matrix[lastRollPos][lastCollumPos] == 'T' || matrix[lastRollPos][lastCollumPos] == 't')
+                Rook(matrix[lastRollPos][lastCollumPos] == 'T' && round % 2 == 0);
+
+
         } while (validMove == false);
+        if (lastRollPos % 2 != 0 && (lastCollumPos == 4 || lastCollumPos == 8 || lastCollumPos == 12 || lastCollumPos == 16))
+            matrix[lastRollPos][lastCollumPos] = '0';
+        else if (lastRollPos %2 == 0 && (lastCollumPos == 2 || lastCollumPos == 6 || lastCollumPos == 10 || lastCollumPos == 14))
+        {
+            matrix[lastRollPos][lastCollumPos] = '0';
+
+        }
+        else
+            matrix[lastRollPos][lastCollumPos] = ' ';
+        round++;
     }
 
     
 }
+
 
 
