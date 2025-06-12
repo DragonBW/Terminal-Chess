@@ -362,7 +362,8 @@ int main()
                 if (scanf(" %c %d", &collum, &roll) !=2)
                 {
                     printf("coordenada invalida!");
-                    free(collum, roll);
+                    free(collum);
+                    free(roll);
                     continue;
                 }
                 //char rusultString[3];
