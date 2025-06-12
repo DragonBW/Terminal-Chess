@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h> 
-#include <ctype.h> 
+#include <ctype.h>
+#include <stdlib.h>
+
 
 int collumPos = 0;
 int rollPos = 0;
@@ -357,7 +359,16 @@ int main()
             if ((isupper(matrix[lastRollPos][lastCollumPos]) && round %2 == 0) || (islower(matrix[lastRollPos][lastCollumPos]) && round % 2 != 0))
             {
                 printf("de as coordenadas da jogada: ");
-                scanf(" %c %d", &collum, &roll);
+                if (scanf(" %c %d", &collum, &roll) !=2)
+                {
+                    printf("coordenada invalida!");
+                    free(collum, roll);
+                    continue;
+                }
+                //char rusultString[3];
+                //strcat 
+                //if (strlen(2,))
+                
             }
             else if (matrix[lastRollPos][lastCollumPos] == '0' || matrix[lastRollPos][lastCollumPos] == ' ')
             {
@@ -366,7 +377,7 @@ int main()
             }
             else
             {
-                printf("Lado incorreto!\n");
+                printf("coordenada invalida!\n");
                 printf("%d", round);
                 continue;
             }
